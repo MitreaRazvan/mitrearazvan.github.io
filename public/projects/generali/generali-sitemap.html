@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generali App - Information Architecture Sitemap</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f5f5f5;
+            padding: 40px 20px;
+            overflow-x: auto;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            padding: 40px;
+            border-radius: 16px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .header h1 {
+            color: #C8102E;
+            font-size: 32px;
+            margin-bottom: 8px;
+        }
+
+        .header p {
+            color: #666;
+            font-size: 16px;
+        }
+
+        .sitemap {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 40px;
+        }
+
+        .level {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            flex-wrap: wrap;
+            width: 100%;
+        }
+
+        .node {
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            padding: 16px 24px;
+            min-width: 160px;
+            text-align: center;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .node:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(200, 16, 46, 0.15);
+            border-color: #C8102E;
+        }
+
+        .node.primary {
+            background: #C8102E;
+            color: white;
+            border-color: #C8102E;
+            font-weight: 600;
+            font-size: 18px;
+            padding: 20px 32px;
+        }
+
+        .node.secondary {
+            background: #fff5f5;
+            border-color: #C8102E;
+            font-weight: 500;
+        }
+
+        .node.tertiary {
+            background: white;
+            border-color: #ddd;
+        }
+
+        .node-title {
+            font-size: 14px;
+            font-weight: 500;
+            color: #333;
+            margin-bottom: 4px;
+        }
+
+        .node.primary .node-title {
+            color: white;
+        }
+
+        .node-subtitle {
+            font-size: 12px;
+            color: #999;
+        }
+
+        .node.primary .node-subtitle {
+            color: rgba(255,255,255,0.9);
+        }
+
+        .connector {
+            width: 2px;
+            height: 40px;
+            background: #ddd;
+            margin: 0 auto;
+        }
+
+        .connector.primary {
+            background: #C8102E;
+            width: 3px;
+        }
+
+        .branch-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .horizontal-line {
+            width: 100%;
+            height: 2px;
+            background: #ddd;
+            position: relative;
+        }
+
+        .horizontal-line.primary {
+            background: #C8102E;
+            height: 3px;
+        }
+
+        .flow-section {
+            margin: 60px 0;
+            padding: 30px;
+            background: #fafafa;
+            border-radius: 12px;
+            border: 2px dashed #ddd;
+        }
+
+        .flow-section h3 {
+            color: #C8102E;
+            font-size: 20px;
+            margin-bottom: 24px;
+            text-align: center;
+        }
+
+        .flow-steps {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .flow-arrow {
+            color: #C8102E;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .step-node {
+            background: white;
+            border: 2px solid #C8102E;
+            border-radius: 8px;
+            padding: 12px 20px;
+            font-size: 13px;
+            font-weight: 500;
+            color: #333;
+            position: relative;
+        }
+
+        .step-number {
+            position: absolute;
+            top: -12px;
+            left: -12px;
+            background: #C8102E;
+            color: white;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .legend {
+            display: flex;
+            gap: 30px;
+            justify-content: center;
+            margin-top: 40px;
+            padding-top: 30px;
+            border-top: 2px solid #eee;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+            color: #666;
+        }
+
+        .legend-box {
+            width: 30px;
+            height: 20px;
+            border-radius: 4px;
+            border: 2px solid;
+        }
+
+        .legend-box.primary {
+            background: #C8102E;
+            border-color: #C8102E;
+        }
+
+        .legend-box.secondary {
+            background: #fff5f5;
+            border-color: #C8102E;
+        }
+
+        .legend-box.tertiary {
+            background: white;
+            border-color: #ddd;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+
+            .header h1 {
+                font-size: 24px;
+            }
+
+            .level {
+                gap: 15px;
+            }
+
+            .node {
+                min-width: 140px;
+                padding: 12px 16px;
+            }
+
+            .flow-steps {
+                flex-direction: column;
+            }
+
+            .flow-arrow {
+                transform: rotate(90deg);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Generali Insurance App</h1>
+            <p>Information Architecture & User Flow</p>
+        </div>
+
+        <div class="sitemap">
+            <!-- App Entry Point -->
+            <div class="node primary">
+                <div class="node-title">App Launch</div>
+            </div>
+
+            <div class="connector primary"></div>
+
+            <!-- Authentication Check -->
+            <div class="node secondary">
+                <div class="node-title">User Authentication</div>
+                <div class="node-subtitle">Login status check</div>
+            </div>
+
+            <div class="connector"></div>
+
+            <!-- Main Split: New User vs Existing User -->
+            <div class="level">
+                <!-- Left Branch: Onboarding -->
+                <div class="branch-container">
+                    <div class="node secondary">
+                        <div class="node-title">New User</div>
+                        <div class="node-subtitle">Onboarding flow</div>
+                    </div>
+                    <div class="connector"></div>
+                    <div class="node tertiary">
+                        <div class="node-title">Welcome Screen</div>
+                    </div>
+                    <div class="connector"></div>
+                    <div class="node tertiary">
+                        <div class="node-title">Sign Up (3 Steps)</div>
+                        <div class="node-subtitle">ID, Security, Contact</div>
+                    </div>
+                    <div class="connector"></div>
+                    <div class="node tertiary">
+                        <div class="node-title">Biometric Setup</div>
+                        <div class="node-subtitle">Face ID / Fingerprint</div>
+                    </div>
+                </div>
+
+                <!-- Right Branch: Existing User -->
+                <div class="branch-container">
+                    <div class="node secondary">
+                        <div class="node-title">Existing User</div>
+                        <div class="node-subtitle">Direct access</div>
+                    </div>
+                    <div class="connector"></div>
+                    <div class="node tertiary">
+                        <div class="node-title">Login</div>
+                        <div class="node-subtitle">Email / Biometric</div>
+                    </div>
+                    <div class="connector"></div>
+                    <div class="node tertiary">
+                        <div class="node-title">Forgot Password</div>
+                        <div class="node-subtitle">Recovery flow</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="connector primary"></div>
+
+            <!-- Dashboard -->
+            <div class="node primary">
+                <div class="node-title">Dashboard (Home)</div>
+                <div class="node-subtitle">Main hub</div>
+            </div>
+
+            <div class="connector primary"></div>
+
+            <!-- Bottom Navigation -->
+            <div class="node secondary" style="padding: 24px 40px;">
+                <div class="node-title" style="font-size: 16px;">Bottom Navigation</div>
+                <div class="node-subtitle">4 main sections</div>
+            </div>
+
+            <div class="connector"></div>
+
+            <!-- Main Sections -->
+            <div class="level">
+                <!-- Dashboard -->
+                <div class="branch-container">
+                    <div class="node secondary">
+                        <div class="node-title">Dashboard</div>
+                    </div>
+                    <div class="connector"></div>
+                    <div class="node tertiary">
+                        <div class="node-title">Active Policies</div>
+                    </div>
+                    <div class="connector"></div>
+                    <div class="node tertiary">
+                        <div class="node-title">Quick Actions</div>
+                    </div>
+                    <div class="connector"></div>
+                    <div class="node tertiary">
+                        <div class="node-title">Notifications</div>
+                    </div>
+                </div>
+
+                <!-- Insurances -->
+                <div class="branch-container">
+                    <div class="node secondary">
+                        <div class="node-title">Insurances</div>
+                    </div>
+                    <div class="connector"></div>
+                    <div class="node tertiary">
+                        <div class="node-title">Life Insurance</div>
+                    </div>
+                    <div class="connector"></div>
+                    <div class="node tertiary">
+                        <div class="node-title">Travel Insurance</div>
+                    </div>
+                    <div class="connector"></div>
+                    <div class="node tertiary">
+                        <div class="node-title">Health Insurance</div>
+                    </div>
+                    <div class="connector"></div>
+                    <div class="node tertiary">
+                        <div class="node-title">Auto Insurance</div>
+                    </div>
+                </div>
+
+                <!-- Portfolio -->
+                <div class="branch-container">
+                    <div class="node secondary">
+                        <div class="node-title">Portfolio</div>
+                    </div>
+                    <div class="connector"></div>
+                    <div class="node tertiary">
+                        <div class="node-title">All Policies</div>
+                    </div>
+                    <div class="connector"></div>
+                    <div class="node tertiary">
+                        <div class="node-title">Pension Details</div>
+                    </div>
+                    <div class="connector"></div>
+                    <div class="node tertiary">
+                        <div class="node-title">Contribution History</div>
+                    </div>
+                    <div class="connector"></div>
+                    <div class="node tertiary">
+                        <div class="node-title">Documents</div>
+                    </div>
+                </div>
+
+                <!-- Profile -->
+                <div class="branch-container">
+                    <div class="node secondary">
+                        <div class="node-title">Profile</div>
+                    </div>
+                    <div class="connector"></div>
+                    <div class="node tertiary">
+                        <div class="node-title">Personal Info</div>
+                    </div>
+                    <div class="connector"></div>
+                    <div class="node tertiary">
+                        <div class="node-title">Payment Methods</div>
+                    </div>
+                    <div class="connector"></div>
+                    <div class="node tertiary">
+                        <div class="node-title">Settings</div>
+                    </div>
+                    <div class="connector"></div>
+                    <div class="node tertiary">
+                        <div class="node-title">Support</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Purchase Flow Section -->
+        <div class="flow-section">
+            <h3>Insurance Purchase Flow (Life Insurance Example)</h3>
+            <div class="flow-steps">
+                <div class="step-node">
+                    <div class="step-number">1</div>
+                    <div>Select Insurance Type</div>
+                </div>
+                <div class="flow-arrow">→</div>
+                <div class="step-node">
+                    <div class="step-number">2</div>
+                    <div>Choose Coverage</div>
+                </div>
+                <div class="flow-arrow">→</div>
+                <div class="step-node">
+                    <div class="step-number">3</div>
+                    <div>Add Beneficiaries</div>
+                </div>
+                <div class="flow-arrow">→</div>
+                <div class="step-node">
+                    <div class="step-number">4</div>
+                    <div>Payment Details</div>
+                </div>
+                <div class="flow-arrow">→</div>
+                <div class="step-node">
+                    <div class="step-number">5</div>
+                    <div>Confirmation & Success</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Legend -->
+        <div class="legend">
+            <div class="legend-item">
+                <div class="legend-box primary"></div>
+                <span>Primary Screens</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-box secondary"></div>
+                <span>Main Sections</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-box tertiary"></div>
+                <span>Sub-sections</span>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
