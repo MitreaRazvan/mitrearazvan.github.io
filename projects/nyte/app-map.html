@@ -1,0 +1,748 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NYTE — Information Architecture</title>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #FDFDFD;
+    --bg-card: #FFFFFF;
+    --cyan: #1AFFE8;
+    --green: #34D399;
+    --amber: #FBBF24;
+    --red: #EF4444;
+    --blue: #3399FF;
+    --friend-blue: #99CCFF;
+    --text-primary: #111111;
+    --text-secondary: #555555;
+    --text-tertiary: #999999;
+    --border: #E8E8E8;
+    --border-dark: #D0D0D0;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text-primary);
+    font-family: 'Bricolage Grotesque', sans-serif;
+    min-height: 100vh;
+    padding: 60px 40px 120px;
+  }
+
+  /* HEADER */
+  .header {
+    text-align: center;
+    margin-bottom: 60px;
+  }
+
+  .header-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 5px;
+    text-transform: uppercase;
+    color: var(--text-tertiary);
+    margin-bottom: 12px;
+  }
+
+  .header-title {
+    font-size: clamp(32px, 5vw, 52px);
+    font-weight: 800;
+    color: var(--text-primary);
+    line-height: 1.1;
+  }
+
+  .header-sub {
+    font-size: 16px;
+    color: var(--text-secondary);
+    margin-top: 10px;
+  }
+
+  /* LEGEND */
+  .legend {
+    display: flex;
+    justify-content: center;
+    gap: 24px;
+    margin-bottom: 50px;
+    flex-wrap: wrap;
+  }
+
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 1px;
+    color: var(--text-tertiary);
+    text-transform: uppercase;
+  }
+
+  .legend-swatch {
+    width: 12px;
+    height: 12px;
+    border-radius: 3px;
+  }
+
+  /* ARCHITECTURE */
+  .arch {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  /* ROOT NODE */
+  .root-node {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 40px;
+  }
+
+  .node {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 16px 24px;
+    text-align: center;
+    position: relative;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+  }
+
+  .node:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 30px rgba(0,0,0,0.06);
+  }
+
+  .node::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 20px;
+    right: 20px;
+    height: 3px;
+    border-radius: 0 0 3px 3px;
+  }
+
+  .node-screen {
+    font-family: 'Space Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 2px;
+    color: var(--text-tertiary);
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+
+  .node-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text-primary);
+  }
+
+  .node-sub {
+    font-size: 11px;
+    color: var(--text-tertiary);
+    margin-top: 3px;
+  }
+
+  .node-tag {
+    font-family: 'Space Mono', monospace;
+    font-size: 8px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 2px 6px;
+    border-radius: 3px;
+    display: inline-block;
+    margin-top: 6px;
+    font-weight: 700;
+  }
+
+  /* Color variants */
+  .c-session::before { background: var(--blue); }
+  .c-radar::before { background: var(--friend-blue); }
+  .c-party::before { background: var(--cyan); }
+  .c-safe::before { background: var(--green); }
+  .c-sound::before { background: var(--amber); }
+  .c-emergency::before { background: var(--red); }
+  .c-system::before { background: var(--text-primary); }
+
+  .tag-session { color: var(--blue); background: rgba(51,153,255,0.08); }
+  .tag-radar { color: #5599DD; background: rgba(153,204,255,0.15); }
+  .tag-party { color: #00B8A9; background: rgba(26,255,232,0.08); }
+  .tag-safe { color: #22A97A; background: rgba(52,211,153,0.1); }
+  .tag-sound { color: #C49000; background: rgba(251,191,36,0.1); }
+  .tag-emergency { color: var(--red); background: rgba(239,68,68,0.08); }
+  .tag-overlay { color: var(--text-secondary); background: rgba(0,0,0,0.05); }
+
+  /* CONNECTOR LINES */
+  .connector-v {
+    display: flex;
+    justify-content: center;
+    height: 40px;
+    position: relative;
+  }
+
+  .connector-v .line {
+    width: 2px;
+    height: 100%;
+    background: var(--border-dark);
+  }
+
+  .connector-v .line::after {
+    content: '';
+    position: absolute;
+    bottom: -4px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0; height: 0;
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    border-top: 6px solid var(--border-dark);
+  }
+
+  /* HORIZONTAL BRANCH */
+  .branch-row {
+    display: flex;
+    justify-content: center;
+    position: relative;
+    margin-bottom: 0;
+  }
+
+  .branch-row::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    height: 2px;
+    background: var(--border-dark);
+  }
+
+  /* Session flow */
+  .session-branch::before { width: 360px; }
+
+  /* Tab branch */
+  .tab-branch::before { width: 85%; max-width: 1000px; }
+
+  .branch-row .node-col {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    flex: 1;
+    max-width: 220px;
+  }
+
+  .branch-row .node-col::before {
+    content: '';
+    width: 2px;
+    height: 20px;
+    background: var(--border-dark);
+  }
+
+  /* NODE GROUP - for sub-items under a tab */
+  .node-group {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    margin-top: 12px;
+  }
+
+  .node-mini {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 8px 16px;
+    text-align: center;
+    width: 100%;
+    max-width: 200px;
+    transition: transform 0.15s ease;
+  }
+
+  .node-mini:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px rgba(0,0,0,0.04);
+  }
+
+  .node-mini-title {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-primary);
+  }
+
+  .node-mini-sub {
+    font-size: 10px;
+    color: var(--text-tertiary);
+    margin-top: 2px;
+  }
+
+  .node-mini-tag {
+    font-family: 'Space Mono', monospace;
+    font-size: 7px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    padding: 1px 5px;
+    border-radius: 3px;
+    display: inline-block;
+    margin-top: 4px;
+    font-weight: 700;
+  }
+
+  /* Sub connector */
+  .sub-connector {
+    width: 2px;
+    height: 12px;
+    background: var(--border);
+    margin: 0 auto;
+  }
+
+  /* SECTION DIVIDERS */
+  .section-label {
+    text-align: center;
+    margin: 50px 0 30px;
+    position: relative;
+  }
+
+  .section-label::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: var(--border);
+  }
+
+  .section-label span {
+    position: relative;
+    background: var(--bg);
+    padding: 0 20px;
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: var(--text-tertiary);
+  }
+
+  /* EMERGENCY SIDE RAIL */
+  .emergency-rail {
+    margin-top: 50px;
+    border: 2px dashed rgba(239, 68, 68, 0.3);
+    border-radius: 20px;
+    padding: 30px;
+    position: relative;
+  }
+
+  .emergency-rail-label {
+    position: absolute;
+    top: -12px;
+    left: 30px;
+    background: var(--bg);
+    padding: 0 12px;
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--red);
+    font-weight: 700;
+  }
+
+  .emergency-flow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+
+  .flow-arrow {
+    font-family: 'Space Mono', monospace;
+    font-size: 18px;
+    color: var(--border-dark);
+  }
+
+  /* OVERLAY SECTION */
+  .overlay-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 12px;
+    margin-top: 20px;
+  }
+
+  .overlay-card {
+    background: var(--bg-card);
+    border: 1px dashed var(--border);
+    border-radius: 10px;
+    padding: 14px 16px;
+    text-align: center;
+  }
+
+  .overlay-card-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-primary);
+  }
+
+  .overlay-card-trigger {
+    font-family: 'Space Mono', monospace;
+    font-size: 9px;
+    color: var(--text-tertiary);
+    margin-top: 4px;
+    letter-spacing: 1px;
+  }
+
+  .overlay-card-tag {
+    font-family: 'Space Mono', monospace;
+    font-size: 7px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    padding: 1px 5px;
+    border-radius: 3px;
+    display: inline-block;
+    margin-top: 6px;
+    font-weight: 700;
+  }
+
+  /* ACCESS PATHS */
+  .access-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-top: 20px;
+  }
+
+  .access-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 18px;
+  }
+
+  .access-card-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--text-tertiary);
+    margin-bottom: 8px;
+  }
+
+  .access-card-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 4px;
+  }
+
+  .access-card-desc {
+    font-size: 11px;
+    color: var(--text-secondary);
+    line-height: 1.5;
+  }
+
+  /* FOOTER NOTE */
+  .footer-note {
+    text-align: center;
+    margin-top: 80px;
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--text-tertiary);
+  }
+
+  @media (max-width: 800px) {
+    .branch-row { flex-direction: column; align-items: center; gap: 16px; }
+    .branch-row::before { display: none; }
+    .branch-row .node-col::before { display: none; }
+    .access-grid { grid-template-columns: 1fr; }
+    .emergency-flow { flex-direction: column; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="header-label">NYTE · Information Architecture</div>
+  <h1 class="header-title">App Map</h1>
+  <p class="header-sub">watchOS navigation structure — 25 screens, 5 modules</p>
+</div>
+
+<!-- LEGEND -->
+<div class="legend">
+  <div class="legend-item"><span class="legend-swatch" style="background: var(--blue)"></span> Session Flow</div>
+  <div class="legend-item"><span class="legend-swatch" style="background: var(--friend-blue)"></span> Friend Radar</div>
+  <div class="legend-item"><span class="legend-swatch" style="background: var(--cyan)"></span> Party Tracker</div>
+  <div class="legend-item"><span class="legend-swatch" style="background: var(--green)"></span> Safe Consuming</div>
+  <div class="legend-item"><span class="legend-swatch" style="background: var(--amber)"></span> Sound Capture</div>
+  <div class="legend-item"><span class="legend-swatch" style="background: var(--red)"></span> Emergency SOS</div>
+  <div class="legend-item"><span class="legend-swatch" style="background: var(--border); border: 1px dashed var(--text-tertiary)"></span> Overlay / Alert</div>
+</div>
+
+<div class="arch">
+
+  <!-- ═══ ENTRY POINT ═══ -->
+  <div class="root-node">
+    <div class="node c-system" style="min-width: 240px;">
+      <div class="node-screen">Entry</div>
+      <div class="node-title">Watch Face Complication</div>
+      <div class="node-sub">Tap to launch NYTE</div>
+      <div class="node-tag tag-session">#21</div>
+    </div>
+  </div>
+
+  <div class="connector-v"><div class="line"></div></div>
+
+  <!-- ═══ SESSION START FLOW ═══ -->
+  <div class="section-label"><span>Session Start Flow</span></div>
+
+  <div class="branch-row session-branch" style="gap: 24px;">
+    <div class="node-col">
+      <div class="node c-session" style="width: 200px;">
+        <div class="node-screen">#1</div>
+        <div class="node-title">Start Night</div>
+        <div class="node-sub">Primary CTA</div>
+      </div>
+    </div>
+    <div class="node-col">
+      <div class="node c-session" style="width: 200px;">
+        <div class="node-screen">#2</div>
+        <div class="node-title">Quick Pair</div>
+        <div class="node-sub">Connect friends</div>
+      </div>
+    </div>
+    <div class="node-col">
+      <div class="node c-session" style="width: 200px;">
+        <div class="node-screen">#3</div>
+        <div class="node-title">Session Confirmed</div>
+        <div class="node-sub">Auto-dismiss 2s</div>
+        <div class="node-tag tag-overlay">Overlay</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="connector-v" style="height: 50px;"><div class="line"></div></div>
+
+  <!-- ═══ MAIN TABS ═══ -->
+  <div class="section-label"><span>Main Tabs · Digital Crown Navigation</span></div>
+
+  <div class="branch-row tab-branch" style="gap: 12px; align-items: flex-start;">
+
+    <!-- TAB 1: FRIEND RADAR -->
+    <div class="node-col">
+      <div class="node c-radar" style="width: 190px;">
+        <div class="node-screen">Tab 1 · #4</div>
+        <div class="node-title">Friend Radar</div>
+        <div class="node-sub">Map + friend list</div>
+        <div class="node-tag tag-radar">Crown Scroll</div>
+      </div>
+      <div class="node-group">
+        <div class="sub-connector"></div>
+        <div class="node-mini">
+          <div class="node-mini-title">Friend Detail</div>
+          <div class="node-mini-sub">Tap friend → push</div>
+          <div class="node-mini-tag tag-radar">#6</div>
+        </div>
+        <div class="sub-connector"></div>
+        <div class="node-mini">
+          <div class="node-mini-title">Poke Sent</div>
+          <div class="node-mini-sub">Confirmation overlay</div>
+          <div class="node-mini-tag tag-overlay">#5</div>
+        </div>
+        <div class="sub-connector"></div>
+        <div class="node-mini">
+          <div class="node-mini-title">Poke Received</div>
+          <div class="node-mini-sub">Friend checking on you</div>
+          <div class="node-mini-tag tag-overlay">#7</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 2: PARTY TRACKER -->
+    <div class="node-col">
+      <div class="node c-party" style="width: 190px;">
+        <div class="node-screen">Tab 2 · #8</div>
+        <div class="node-title">Party Tracker</div>
+        <div class="node-sub">Steps, cals, intensity</div>
+        <div class="node-tag tag-party">Crown Scroll</div>
+      </div>
+      <div class="node-group">
+        <div class="sub-connector"></div>
+        <div class="node-mini">
+          <div class="node-mini-title">Milestone!</div>
+          <div class="node-mini-sub">Achievement overlay</div>
+          <div class="node-mini-tag tag-overlay">#9</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 3: SAFE CONSUMING -->
+    <div class="node-col">
+      <div class="node c-safe" style="width: 190px;">
+        <div class="node-screen">Tab 3 · #10</div>
+        <div class="node-title">Safe Consuming</div>
+        <div class="node-sub">HR, drinks, graph</div>
+        <div class="node-tag tag-safe">Crown Scroll</div>
+      </div>
+      <div class="node-group">
+        <div class="sub-connector"></div>
+        <div class="node-mini">
+          <div class="node-mini-title">Drink Picker</div>
+          <div class="node-mini-sub">+ Log Drink → push</div>
+          <div class="node-mini-tag tag-safe">#10a</div>
+        </div>
+        <div class="sub-connector"></div>
+        <div class="node-mini">
+          <div class="node-mini-title">Hydration Reminder</div>
+          <div class="node-mini-sub">Timed alert overlay</div>
+          <div class="node-mini-tag tag-overlay">#11</div>
+        </div>
+        <div class="sub-connector"></div>
+        <div class="node-mini">
+          <div class="node-mini-title">Break Alert</div>
+          <div class="node-mini-sub">Elevated HR warning</div>
+          <div class="node-mini-tag tag-overlay">#12</div>
+        </div>
+        <div class="sub-connector"></div>
+        <div class="node-mini">
+          <div class="node-mini-title">Breathing Exercise</div>
+          <div class="node-mini-sub">Cool Down → push</div>
+          <div class="node-mini-tag tag-safe">#13</div>
+        </div>
+        <div class="sub-connector"></div>
+        <div class="node-mini" style="border-color: rgba(239,68,68,0.3);">
+          <div class="node-mini-title" style="color: var(--red);">Critical HR Alert</div>
+          <div class="node-mini-sub">155+ BPM · red bg</div>
+          <div class="node-mini-tag tag-emergency">#14</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 4: SOUND CAPTURE -->
+    <div class="node-col">
+      <div class="node c-sound" style="width: 190px;">
+        <div class="node-screen">Tab 4 · #15</div>
+        <div class="node-title">Sound Capture</div>
+        <div class="node-sub">Listening + playlist</div>
+        <div class="node-tag tag-sound">Crown Scroll</div>
+      </div>
+      <div class="node-group">
+        <div class="sub-connector"></div>
+        <div class="node-mini">
+          <div class="node-mini-title">Song Identified</div>
+          <div class="node-mini-sub">"Caught It!" overlay</div>
+          <div class="node-mini-tag tag-overlay">#16</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 5: SESSION SUMMARY -->
+    <div class="node-col">
+      <div class="node c-session" style="width: 190px;">
+        <div class="node-screen">Tab 5 · #20</div>
+        <div class="node-title">Session Summary</div>
+        <div class="node-sub">Stats, songs, friends</div>
+        <div class="node-tag tag-session">Crown Scroll</div>
+      </div>
+      <div class="node-group">
+        <div class="sub-connector"></div>
+        <div class="node-mini">
+          <div class="node-mini-title">End Night</div>
+          <div class="node-mini-sub">Confirm → end session</div>
+          <div class="node-mini-tag tag-session">#20a</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ EMERGENCY SOS ═══ -->
+  <div class="emergency-rail">
+    <div class="emergency-rail-label">⚠ Emergency SOS — Always Accessible</div>
+
+    <div class="emergency-flow">
+      <div class="node c-emergency" style="min-width: 180px;">
+        <div class="node-screen">#17</div>
+        <div class="node-title">SOS Activation</div>
+        <div class="node-sub">3s countdown</div>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="node c-emergency" style="min-width: 180px;">
+        <div class="node-screen">#18</div>
+        <div class="node-title">SOS Active</div>
+        <div class="node-sub">Calling 112 + location shared</div>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="node c-emergency" style="min-width: 200px;">
+        <div class="node-screen">#19</div>
+        <div class="node-title">Friend SOS Alert</div>
+        <div class="node-sub">On friends' watches</div>
+      </div>
+    </div>
+
+    <!-- Access Paths -->
+    <div style="margin-top: 30px;">
+      <div class="section-label" style="margin: 0 0 16px;"><span>Trigger Paths</span></div>
+      <div class="access-grid">
+        <div class="access-card">
+          <div class="access-card-label">Hardware</div>
+          <div class="access-card-title">Side Button Hold</div>
+          <div class="access-card-desc">3 seconds. Works from any screen, even display off. For violence, harassment, or physical danger.</div>
+        </div>
+        <div class="access-card">
+          <div class="access-card-label">Health Path</div>
+          <div class="access-card-title">Critical HR → "Call Emergency"</div>
+          <div class="access-card-desc">From screen #14. Heart rate critical at 155+ BPM. Tap "Call Emergency" button.</div>
+        </div>
+        <div class="access-card">
+          <div class="access-card-label">Friend Path</div>
+          <div class="access-card-title">Poke Received → "Need Help"</div>
+          <div class="access-card-desc">From screen #7. Friend is checking on you. Tap "Need Help" to escalate to SOS.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ SOLO MODE NOTE ═══ -->
+  <div style="margin-top: 40px; text-align: center;">
+    <div class="node c-system" style="display: inline-block; min-width: 300px;">
+      <div class="node-screen">Variant</div>
+      <div class="node-title">Solo Mode</div>
+      <div class="node-sub">No friends paired → 4 tabs (Friend Radar removed)</div>
+      <div class="node-tag tag-session">Tab dots: 4 instead of 5</div>
+    </div>
+  </div>
+
+  <!-- ═══ NAVIGATION MODEL ═══ -->
+  <div class="section-label" style="margin-top: 60px;"><span>Navigation Model</span></div>
+
+  <div class="access-grid" style="grid-template-columns: repeat(4, 1fr); margin-top: 20px;">
+    <div class="access-card">
+      <div class="access-card-label">Between Tabs</div>
+      <div class="access-card-title">Digital Crown</div>
+      <div class="access-card-desc">Scroll up/down to switch between the 5 main tabs. Vertical slide transition, 300ms.</div>
+    </div>
+    <div class="access-card">
+      <div class="access-card-label">Into Detail</div>
+      <div class="access-card-title">Tap → Push Right</div>
+      <div class="access-card-desc">Tap a friend, button, or card to push deeper. 350ms smart animate. Back via swipe or chevron.</div>
+    </div>
+    <div class="access-card">
+      <div class="access-card-label">Alerts</div>
+      <div class="access-card-title">Dissolve Overlay</div>
+      <div class="access-card-desc">Poke, hydration, milestone, song — appear as dissolve overlays. 250ms in, 200ms out.</div>
+    </div>
+    <div class="access-card">
+      <div class="access-card-label">Emergency</div>
+      <div class="access-card-title">Hard Cut</div>
+      <div class="access-card-desc">Instant transition. 0ms. No animation. Urgency over elegance.</div>
+    </div>
+  </div>
+
+</div>
+
+<div class="footer-note">NYTE — 25 Screens · 5 Modules · 1 Mission</div>
+
+</body>
+</html>
